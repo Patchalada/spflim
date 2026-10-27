@@ -47,7 +47,7 @@ export function printElement(elementOrId, options = {}) {
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>${title}</title>
+        <title></title>
         ${styleElements}
         <style>
           @page {
@@ -123,10 +123,13 @@ export function printElement(elementOrId, options = {}) {
     </html>
   `);
   doc.close();
+  doc.title = title;
 
   // รอให้รูปภาพและ Fonts ภายใน iframe โหลดเสร็จก่อนสั่งพิมพ์
   const executePrint = () => {
+    const originalTitle = document.title;
     try {
+      document.title = title;
       iframe.contentWindow?.focus();
       iframe.contentWindow?.print();
     } catch (e) {
@@ -134,6 +137,7 @@ export function printElement(elementOrId, options = {}) {
       window.print();
     } finally {
       setTimeout(() => {
+        document.title = originalTitle;
         if (document.body.contains(iframe)) {
           document.body.removeChild(iframe);
         }
