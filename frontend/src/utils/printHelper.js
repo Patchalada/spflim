@@ -85,6 +85,11 @@ export function printElement(elementOrId, options = {}) {
             border: none !important;
             overflow: visible !important;
           }
+          .contract-document {
+            zoom: 0.8 !important;
+            width: 125% !important;
+            max-width: none !important;
+          }
           img {
             max-width: 100% !important;
             height: auto !important;

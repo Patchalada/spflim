@@ -239,7 +239,7 @@ export default function OfficialContractDocument({
                 className="max-h-16 max-w-[200px] object-contain mx-auto"
               />
               <p className="text-[10px] text-emerald-700 font-bold mt-1">
-                ✓ ผู้เช่าลงนามแล้วเมื่อ ${formatDate(tenantSignedAt)}
+                ✓ ผู้เช่าลงนามแล้วเมื่อ {formatDate(tenantSignedAt)}
               </p>
             </div>
           ) : liveTenantSignature ? (
