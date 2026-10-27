@@ -6,6 +6,7 @@ import api from '../api/axios';
 
 const getSocketUrl = () => {
   if (import.meta.env.VITE_WS_URL) return import.meta.env.VITE_WS_URL;
+  if (!import.meta.env.DEV) return window.location.origin;
   const hostname = window.location.hostname || 'localhost';
   return `http://${hostname}:5000`;
 };
