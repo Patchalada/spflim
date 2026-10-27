@@ -1,25 +1,52 @@
-# Deploy to a VPS
+# Deploy to Hostinger VPS
 
-The production setup builds the React app into Nginx and proxies `/api`,
-`/api-docs`, and `/socket.io` to Express. It uses the existing PostgreSQL
-database configured in `backend/.env`; it does not create or migrate data to a
-new database.
+This project runs as a React/Vite frontend and Express API behind Nginx in
+Docker Compose. It uses the existing PostgreSQL database configured in
+`backend/.env`; it does not create a replacement database.
 
-## Before starting
+## Confirm the Hostinger plan
 
-- Have the VPS public IP and SSH access.
-- Install Docker Engine and the Docker Compose plugin on the VPS.
-- Confirm the VPS can connect to the existing database host.
-- Back up the existing database before the first start. The backend applies
-  schema migrations when it starts.
-- Keep `backend/.env` private. It is ignored by Git and excluded from the
-  backend image.
+These Docker instructions require a **VPS** with Ubuntu and SSH access. A
+shared Web Hosting plan does not provide the Docker/Compose environment used
+here. In hPanel, open **VPS** and check that the server shows an IP address and
+an Ubuntu operating system. Do not reinstall an existing VPS just to change
+the OS without confirming that no data needs preserving.
 
-## Deploy
+## Prepare the VPS
 
-From the VPS, clone the repository and enter its root directory. Create
-`backend/.env` using the existing database settings and secrets; do not commit
-or paste the file into chat. Ensure it contains:
+In hPanel, check **VPS → Manage** for the public IP and SSH information.
+Connect from Windows Terminal:
+
+```powershell
+ssh root@YOUR_VPS_IP
+```
+
+On the VPS, install Docker Engine and its Compose plugin if they are not
+already installed:
+
+```sh
+apt update
+apt install -y git
+curl -fsSL https://get.docker.com | sh
+docker --version
+docker compose version
+```
+
+Allow inbound TCP port 80 in the Hostinger firewall and the VPS firewall.
+If another site already uses port 80, keep its existing Nginx service running;
+this app binds only to `127.0.0.1:8080` and uses a separate Nginx virtual host.
+
+## Deploy the application
+
+Clone this repository on the VPS:
+
+```sh
+git clone https://github.com/Patchalada/spflim.git
+cd spflim
+```
+
+Create `backend/.env` on the VPS using the existing database configuration and
+secrets. Do not commit the file or send it in chat. Required settings:
 
 ```dotenv
 DB_HOST=...
@@ -28,37 +55,43 @@ DB_USER=...
 DB_PASSWORD=...
 DB_NAME=...
 JWT_SECRET=...
+ALLOWED_ORIGINS=http://spflim.nualjan.tech
 SLIPOK_MODE=manual
-ALLOWED_ORIGINS=http://YOUR_VPS_IP
 ```
 
-Set `ALLOWED_ORIGINS` to the exact public origin, without a trailing slash.
-Keep optional SlipOK and LINE credentials in this file if those integrations
-are needed. Restrict its permissions:
+Restrict access to the environment file and start the application:
 
 ```sh
 chmod 600 backend/.env
-```
-
-Then start the stack:
-
-```sh
 docker compose -f docker-compose.production.yml up -d --build
 docker compose -f docker-compose.production.yml ps
 docker compose -f docker-compose.production.yml logs --tail=100 backend
 ```
 
-Open TCP port 80 in the VPS firewall and visit `http://YOUR_VPS_IP`. The API
-documentation is at `http://YOUR_VPS_IP/api-docs`. Socket.IO is proxied through
-the same origin, so the browser does not need a separate backend URL.
+The backend runs schema migrations at startup. Back up the existing database
+first and confirm the VPS can connect to it. Do not run SQL or copy database
+credentials from deployment instructions for another project.
 
-## HTTPS and updates
+## Route a subdomain through existing Nginx
 
-An IP-only deployment uses HTTP. Do not use it to transmit real identity
-documents or other sensitive data. Point a domain to the VPS and configure
-HTTPS before using real tenant data.
+Create an A record for `spflim.nualjan.tech` pointing to the VPS IPv4 address.
+Do not change existing records for the root domain, `www`, or other sites.
+Install only this app's additional virtual host:
 
-For an update, pull the intended commit and rebuild:
+```sh
+cp deploy/nginx/spflim.conf /etc/nginx/conf.d/spflim.conf
+nginx -t && systemctl reload nginx
+```
+
+Then open `http://spflim.nualjan.tech` to test the app and
+`http://spflim.nualjan.tech/api-docs` for the API docs. The frontend proxies
+API and Socket.IO through this same origin. Keep the existing Nginx sites
+running. Configure HTTPS for the new subdomain before sending identity
+documents or other sensitive data.
+
+## Updating
+
+After a change is pushed to `main`:
 
 ```sh
 git pull
