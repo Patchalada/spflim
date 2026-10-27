@@ -87,6 +87,29 @@ export function printElement(elementOrId, options = {}) {
             border: none !important;
             overflow: visible !important;
           }
+          ${isContractDocument ? `
+          .contract-document {
+            zoom: 0.9 !important;
+          }
+          .contract-document > :not([hidden]) ~ :not([hidden]) {
+            margin-top: 8px !important;
+          }
+          .contract-document > div:first-child {
+            padding-bottom: 8px !important;
+          }
+          .contract-document .p-4 {
+            padding: 8px !important;
+          }
+          .contract-document .pt-6 {
+            padding-top: 8px !important;
+          }
+          .contract-document [class~="min-h-[140px]"] {
+            min-height: 72px !important;
+          }
+          .contract-document ol > li + li {
+            margin-top: 2px !important;
+          }
+          ` : ''}
           img {
             max-width: 100% !important;
             height: auto !important;
