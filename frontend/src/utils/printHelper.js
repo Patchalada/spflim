@@ -15,13 +15,15 @@ export function printElement(elementOrId, options = {}) {
     return;
   }
 
+  const isContractDocument = element.classList.contains('contract-document');
+
   // สร้าง iframe ซ่อนสำหรับพิมพ์โดยเฉพาะ เพื่อไม่ให้โครงสร้าง Layout / Flex / Overflow ของหน้าหลักรบกวน
   const iframe = document.createElement('iframe');
   iframe.id = 'spflim-print-frame';
   iframe.style.position = 'fixed';
   iframe.style.top = '-99999px';
   iframe.style.left = '-99999px';
-  iframe.style.width = '1000px';
+  iframe.style.width = isContractDocument ? '700px' : '1000px';
   iframe.style.height = '1000px';
   iframe.style.border = 'none';
   iframe.style.zIndex = '-99999';
@@ -86,8 +88,8 @@ export function printElement(elementOrId, options = {}) {
             overflow: visible !important;
           }
           .contract-document {
-            zoom: 0.8 !important;
-            width: 125% !important;
+            zoom: 0.7 !important;
+            width: 142.86% !important;
             max-width: none !important;
           }
           img {
