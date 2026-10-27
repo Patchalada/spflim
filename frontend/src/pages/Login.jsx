@@ -62,8 +62,8 @@ export default function Login() {
             <img src={dormitoryImage} alt="" className="h-10 w-10 object-cover" />
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-800">{dormitoryName}</p>
-            <h2 className="text-2xl font-bold text-slate-800">เข้าสู่ระบบหอพัก</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-50 drop-shadow-sm">{dormitoryName}</p>
+            <h2 className="text-2xl font-bold text-white drop-shadow-sm">เข้าสู่ระบบหอพัก</h2>
           </div>
         </div>
 

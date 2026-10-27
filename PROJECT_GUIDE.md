@@ -42,8 +42,8 @@
 | Frontend | React 19, Vite, React Router 7, Tailwind CSS 4, Axios, lucide-react |
 | Backend | Node.js, Express 5, CommonJS, Socket.io |
 | Database | PostgreSQL ผ่าน `pg` (ตั้งค่าให้เชื่อม Neon ได้) |
-| API ระหว่าง frontend/backend | `http://localhost:5000/api` |
-| หน้า API docs | `http://localhost:5000/api-docs` |
+| API ระหว่าง frontend/backend | Local: `http://localhost:5000/api`; production: `/api` ผ่าน Nginx |
+| หน้า API docs | Local: `http://localhost:5000/api-docs`; production: `http://spflim.nualjan.tech/api-docs` (เปลี่ยนเป็น HTTPS หลังติดตั้ง TLS) |
 | Vite dev server | โดยปกติ `http://localhost:5173` |
 
 โครงสร้างหลัก:
@@ -88,7 +88,7 @@ npm run dev
 
 Backend โหลดค่าจาก `backend/.env` โดยต้องกำหนด `DB_USER`, `DB_HOST`, `DB_NAME`, `DB_PASSWORD`, `DB_PORT`, `JWT_SECRET` และเลือกกำหนด `PORT` (ค่าเริ่มต้น `5000`) **ห้ามใส่ค่าลับจริงในเอกสารหรือ commit ลง Git** ตรวจ `.gitignore` ก่อนเพิ่มไฟล์ตัวอย่าง environment
 
-Frontend Axios base URL ปัจจุบันกำหนดเป็น `http://localhost:5000/api` ใน `frontend/src/api/axios.js`; ก่อน deploy ต้องเปลี่ยนให้รองรับ URL ตาม environment
+Frontend Axios ใช้ `http://localhost:5000/api` ตอนพัฒนาในเครื่อง และใช้ `/api` บน production โดย Nginx proxy ไป backend; Socket.IO ใช้ origin เดียวกับเว็บ production
 
 ## 4. Authentication และสิทธิ์
 
@@ -204,54 +204,166 @@ npm run dev
 
 ### 8.2 การวิเคราะห์คุณภาพและความปลอดภัยของโค้ดด้วย SonarQube (Static Analysis)
 
-ระบบมีการคอนฟิก SonarQube Community Edition และ SonarScanner ไว้เพื่อตรวจสอบ Code Quality, Security Vulnerabilities, Bugs, และ Maintainability
+ระบบมีการคอนฟิก SonarQube Community Edition และ SonarScanner ไว้เพื่อตรวจสอบ Code Quality, Security Vulnerabilities, Bugs, และ Maintainability โดยขั้นตอนด้านล่างต้องรันจาก root ของโปรเจกต์ `D:\spflimfinal` เพื่อให้ Scanner ใช้ `sonar-project.properties` ของ SPFLIM ไม่ใช่ไฟล์ของ Juice Shop ในโฟลเดอร์ย่อย
 
 #### 1) เริ่มต้นรัน SonarQube Server ด้วย Docker
 ```powershell
-cd D:\spflim\SonarQube-main
-docker compose up -d
+Set-Location D:\spflimfinal
+docker compose -f .\SonarQube-main\docker-compose.yml up -d
 ```
-เปิดเบราว์เซอร์ไปที่ `http://localhost:9000` (บัญชีเริ่มต้น `admin` / `admin` และสร้าง Analysis Token จาก *My Account -> Security*)
+เปิด `http://localhost:9000` และรอให้ SonarQube พร้อมใช้งาน จากนั้นสร้าง token ใหม่ที่ *My Account -> Security* อย่าใส่ token จริงลงในเอกสารหรือ commit ลง Git
 
-#### 2) คำสั่งสแกนโปรเจกต์ `spflim` ด้วย SonarScanner (ผ่าน Docker)
-รันคำสั่งนี้จาก root directory `D:\spflim`:
+#### 2) สแกนโปรเจกต์ SPFLIM ด้วย SonarScanner (ผ่าน Docker)
+ใน PowerShell ที่ root directory `D:\spflimfinal` ให้รับ token ไว้ใน environment variable แล้วรัน Scanner:
 ```powershell
+Set-Location D:\spflimfinal
+$env:SONAR_TOKEN = Read-Host "SonarQube token"
+
 docker run --rm `
   --memory=4g `
-  -e SONAR_HOST_URL="http://host.docker.internal:9000" `
-  -e SONAR_TOKEN="<ใส่_TOKEN_ที่ได้จาก_SonarQube>" `
-  -v "${PWD}:/usr/src" `
+  -e "SONAR_HOST_URL=http://host.docker.internal:9000" `
+  -e SONAR_TOKEN `
+  --mount "type=bind,source=$($PWD.Path),target=/usr/src" `
   sonarsource/sonar-scanner-cli
 ```
+Scanner จะอ่าน `sonar.projectKey=spflim-dormitory` จากไฟล์ `D:\spflimfinal\sonar-project.properties` และอัปโหลดผลสแกนของ `backend/src` กับ `frontend/src` ไปยัง SonarQube ห้ามรันคำสั่งนี้จาก `D:\spflimfinal\SonarQube-main` หรือ `D:\spflimfinal\juice-shop` เพราะจะสแกนผิดโปรเจกต์
 
-#### 3) คำสั่งสร้างและส่งออกรายงานสรุปผลเป็น PDF
+#### 3) สร้างรายงาน PDF ของโปรเจกต์ SPFLIM
+รอให้ SonarQube ประมวลผล analysis ที่อัปโหลดเสร็จก่อน แล้วรันจาก `D:\spflimfinal`:
 ```powershell
-python SonarQube-main/sonar_report.py `
+python .\SonarQube-main\sonar_report.py `
   --host http://localhost:9000 `
   --project spflim-dormitory `
-  --token "<ใส่_TOKEN_ที่ได้จาก_SonarQube>" `
-  --output spflim_analysis_report.pdf
+  --token $env:SONAR_TOKEN `
+  --output .\spflim_analysis_report.pdf
+
+Remove-Item Env:SONAR_TOKEN
 ```
-ไฟล์รายงาน PDF จะถูกสร้างไว้ที่ `D:\spflim\spflim_analysis_report.pdf`
+หาก Python แจ้งว่าไม่พบไลบรารี `requests` หรือ `reportlab` ให้ติดตั้งก่อนด้วย `python -m pip install requests reportlab` แล้วรันคำสั่งสร้าง PDF อีกครั้ง ไฟล์จะอยู่ที่ `D:\spflimfinal\spflim_analysis_report.pdf` ตัวเลขและ Quality Gate ใน PDF มาจากผลวิเคราะห์ล่าสุดของ SonarQube
 
-#### 4) สรุปคะแนนการวิเคราะห์ของโปรเจกต์ `spflim` (เกรด A และ Quality Gate: PASSED)
-- **Quality Gate: PASSED** — ผ่านเกณฑ์ Clean as You Code (CAYC) ของ SonarQube
-- **Security Rating: A** — ตรวจพบ Vulnerabilities: **0 จุด**, Security Hotspots: **0 จุด**
-- **Reliability Rating: A** — ตรวจพบบั๊ก (Bugs): **0 จุด**
-- **Maintainability Rating: A** — โค้ดสะอาด มี Code Smells เพียง 29 จุดในระบบขนาด 12,500+ บรรทัด
-- **Duplicated Lines Density: 0.2%** — อัตราโค้ดซ้ำซ้อนต่ำมาก (ผ่านเกณฑ์ < 3%)
+## 9. Build และ deploy บน Hostinger VPS
 
-*(จุดที่ได้รับการแก้ไข: ปรับแต่ง CORS Security ใน `backend/src/index.js`, จัดการ Promise & async/await ใน `backend/src/config/socket.js`, เคลียร์ Floating Promises `javascript:S9383` และระบุ Button Types `javascript:S9011` ใน React Components ทั้งหมด พร้อมกำหนด `sonar.coverage.exclusions=**/*` เพื่อไม่ให้นำเงื่อนไข Test Coverage มาตัดคะแนน Quality Gate)*
+Production ปัจจุบันใช้ Hostinger VPS (Ubuntu), Docker Compose, Nginx ของเครื่อง
+สำหรับแยก `spflim.nualjan.tech` และ Neon PostgreSQL เดิม ดูค่าพอร์ต/การ route ได้ที่
+`docker-compose.production.yml` และ `deploy/nginx/spflim.conf` เว็บกับ API อยู่
+หลัง Nginx เดิม จึงห้ามหยุด Nginx หรือ container ของเว็บไซต์อื่นบน VPS
 
-## 9. จุดที่ยังควรทำก่อน production
+### แก้โค้ดและ deploy
 
-- ย้าย frontend API URL จาก localhost ไป environment configuration และตั้งค่า HTTPS/CORS ตามโดเมนจริง
+แก้โค้ดในเครื่องตามปกติ แล้วรัน checks ที่เกี่ยวข้องก่อนส่งขึ้น GitHub:
+
+```powershell
+cd D:\spflimfinal\frontend
+npm run build
+npm run lint
+
+cd D:\spflimfinal\backend
+npm test
+```
+
+จาก root repository ตรวจว่าไม่มี secret หรือไฟล์ `.env` ที่จะ commit แล้ว commit
+และ push ไป branch `main`:
+
+```powershell
+cd D:\spflimfinal
+git status --short
+git add <ไฟล์ที่แก้>
+git commit -m "Describe the change"
+git push origin main
+```
+
+เชื่อม SSH จาก PowerShell บนเครื่องตัวเอง แล้วดึงการเปลี่ยนแปลงบน VPS:
+
+```powershell
+ssh root@<VPS_IP>
+```
+
+```sh
+cd /root/spflim
+git pull --ff-only
+```
+
+เลือก build/restart เฉพาะ service ที่เปลี่ยน:
+
+```sh
+# แก้ backend
+docker compose -f docker-compose.production.yml up -d --build backend
+
+# แก้ frontend
+docker compose -f docker-compose.production.yml up -d --build frontend
+
+# แก้ทั้ง backend และ frontend หรือ compose
+docker compose -f docker-compose.production.yml up -d --build
+```
+
+Backend จะตรวจและรัน schema migrations ตอนเริ่มระบบ หากเปลี่ยน schema หรือ migration
+ให้สำรอง Neon ก่อน deploy ทุกครั้ง จากนั้นตรวจสถานะและ log:
+
+```sh
+docker compose -f docker-compose.production.yml ps
+docker compose -f docker-compose.production.yml logs --tail=80 backend
+docker compose -f docker-compose.production.yml logs --tail=40 frontend
+curl -I http://127.0.0.1:8080/
+curl -I http://spflim.nualjan.tech/
+curl -I http://spflim.nualjan.tech/api-docs/
+```
+
+หน้าเว็บควรตอบ `200`; backend ควรเป็น `healthy` และหน้า API docs ควรเปิดได้
+ถ้า deploy แล้วผิดพลาด ให้ดู log ก่อน ห้ามใช้ `docker compose down` เพราะจะหยุด
+ทั้ง frontend และ backend ของโปรเจกต์นี้
+
+### แก้ environment variables
+
+`backend/.env` บน VPS เป็นไฟล์แยกจาก Git และไม่ถูกอัปเดตด้วย `git pull`:
+
+```sh
+cd /root/spflim
+nano backend/.env
+```
+
+แก้บรรทัดเดิมแทนการเพิ่ม key ซ้ำ บันทึกด้วย Ctrl+O, Enter, Ctrl+X แล้วนำค่าที่
+เปลี่ยนไปใช้โดย recreate เฉพาะ backend:
+
+```sh
+chmod 600 backend/.env
+docker compose -f docker-compose.production.yml up -d --force-recreate backend
+docker compose -f docker-compose.production.yml ps
+docker compose -f docker-compose.production.yml logs --tail=80 backend
+```
+
+ค่าเชื่อมต่อฐานข้อมูลและ `JWT_SECRET` ต้องเป็นค่าของ production; อย่าแสดง ส่ง
+ผ่านแชต หรือ commit ไฟล์นี้ การเปลี่ยน `JWT_SECRET` จะทำให้ token เดิมใช้ไม่ได้
+และผู้ใช้ต้องเข้าสู่ระบบใหม่
+
+ปัจจุบัน frontend production ใช้ API path `/api` และ Socket.IO origin ของเว็บไซต์
+โดยอัตโนมัติ จึงไม่ต้องตั้ง `VITE_API_URL`/`VITE_WS_URL` สำหรับโดเมนนี้ ค่า
+`VITE_*` ถูกฝังลง bundle ตอน build และไม่ใช่ secret; ถ้าจะเปลี่ยนต้องตั้งค่าระหว่าง
+build แล้ว build frontend ใหม่
+
+### แก้ Nginx หรือโดเมน
+
+เฉพาะเมื่อแก้ `deploy/nginx/spflim.conf` ให้ดึงโค้ดล่าสุดแล้วติดตั้ง config
+ของ subdomain นี้ จากนั้นตรวจ syntax ก่อน reload:
+
+```sh
+cd /root/spflim
+cp deploy/nginx/spflim.conf /etc/nginx/conf.d/spflim.conf
+nginx -t && systemctl reload nginx
+```
+
+อย่าแทนที่ไฟล์ Nginx ของเว็บอื่น และอย่าเปิดพอร์ต `8080` สู่สาธารณะ; container
+ผูกไว้ที่ `127.0.0.1:8080` ให้ Nginx บนเครื่องรับ traffic ที่พอร์ต 80 แล้ว route
+ตาม hostname `spflim.nualjan.tech`
+
+## 10. จุดที่ยังควรทำก่อน production
+
+- ตั้งค่า HTTPS ให้ `spflim.nualjan.tech` และตั้ง `ALLOWED_ORIGINS` ให้ตรงกับ origin จริงก่อนใช้ข้อมูลผู้เช่าจริง
 - เพิ่ม automated tests สำหรับ authorization, migration, การออกบิล และ transaction การยืนยันชำระ
 - ตรวจการจำกัดขนาด/การจัดเก็บไฟล์ KYC, สัญญา และสลิป (ปัจจุบันส่งเป็น base64 ผ่าน JSON)
 - ติดต่อ SlipOK เพื่อรับ API Key/Branch ID ก่อนทดสอบการเชื่อมต่อจริง; อย่าเปิด `SLIPOK_MODE=api` ก่อนยืนยันข้อมูลบัญชี และโหมดจำลองไม่ใช่หลักฐานยืนยันการโอนเงินจริง
 - วางแผน backup/restore, monitoring และแจ้งเตือนบิลค้างชำระ/ใกล้ครบกำหนด
 
-## 10. วิธีใช้เอกสารนี้เป็นบริบทให้ AI ตัวอื่น
+## 11. วิธีใช้เอกสารนี้เป็นบริบทให้ AI ตัวอื่น
 
 เริ่ม prompt ด้วย:
 
