@@ -1,0 +1,3 @@
+curl -u <token>: \
+  "http://localhost:9000/api/issues/search?componentKeys=juice-shop-demo&ps=200" \
+  -o issues.json

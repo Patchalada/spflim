@@ -1,0 +1,510 @@
+@import "tailwindcss";
+
+*,
+*::before,
+*::after {
+  border-radius: 4px !important;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+  border-radius: 4px !important;
+}
+
+body {
+  background: #f1f6f4;
+  color: #17343b;
+}
+
+#root {
+  position: relative;
+  isolation: isolate;
+}
+
+#root::before {
+  content: none;
+}
+
+aside {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: rgb(242 249 247 / 96%) !important;
+  border-right: 1px solid rgb(255 255 255 / 68%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+aside::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: url('./assets/dormitory.svg') center bottom 56px / 280px auto no-repeat;
+  content: '';
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+aside a {
+  border-left: 3px solid transparent;
+  background-color: rgb(255 255 255 / 42%);
+  color: #36545b;
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+aside a:hover {
+  background-color: rgb(53 155 137 / 13%);
+  color: #0c554f;
+}
+
+aside a[aria-current="page"] {
+  border-left-color: #087e76;
+  background-color: rgb(73 190 164 / 25%);
+  color: #0b4c49;
+  font-weight: 600;
+}
+
+aside a svg {
+  color: #498b83;
+}
+
+aside a[aria-current="page"] svg {
+  color: #087e76;
+}
+
+aside .brand-panel {
+  min-height: 96px;
+  border-color: rgb(255 255 255 / 50%) !important;
+  background: rgb(235 249 245 / 48%);
+}
+
+aside .brand-panel .brand-image {
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgb(255 255 255 / 75%);
+  background: rgb(255 255 255 / 78%);
+  object-fit: contain;
+}
+
+aside .brand-panel .profile-photo-picker {
+  position: relative;
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
+aside .brand-panel .profile-avatar {
+  display: grid;
+  place-items: center;
+  border-radius: 50% !important;
+  object-fit: cover;
+}
+
+aside .brand-panel .profile-avatar-placeholder {
+  color: #087e76;
+}
+
+aside .brand-panel .profile-photo-camera {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: grid;
+  width: 19px;
+  height: 19px;
+  place-items: center;
+  border: 2px solid #f2f9f7;
+  border-radius: 50% !important;
+  background: #087e76;
+  color: white;
+}
+
+aside .brand-panel .text-teal-100 {
+  color: #087e76;
+}
+
+aside .brand-panel .text-white {
+  color: #123c42;
+}
+
+aside > div:last-child {
+  border-color: rgb(255 255 255 / 58%) !important;
+}
+
+aside button {
+  color: #36545b !important;
+}
+
+aside button:hover {
+  background: rgb(214 103 95 / 13%) !important;
+  color: #a13e3b !important;
+}
+
+main > #root,
+main {
+  background: transparent;
+}
+
+main {
+  border-top: 5px solid #123f48;
+  min-width: 0;
+}
+
+main > * {
+  color: #17343b;
+}
+
+main > div,
+main article,
+main section {
+  min-width: 0;
+  max-width: 100%;
+}
+
+main [class~="bg-white"] {
+  border-color: rgb(255 255 255 / 76%) !important;
+  background-color: rgb(250 253 252 / 86%) !important;
+  box-shadow: 0 2px 10px rgb(22 61 65 / 8%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+main [class~="bg-gray-50"],
+main [class~="bg-slate-50"] {
+  background-color: rgb(228 240 236 / 80%) !important;
+}
+
+main table thead {
+  background-color: rgb(215 234 228 / 86%);
+}
+
+main input,
+main select,
+main textarea {
+  border-color: #cbded8;
+  background-color: rgb(255 255 255 / 88%);
+}
+
+body [class~="bg-indigo-600"] {
+  background-color: #087e76 !important;
+}
+
+body [class~="bg-indigo-600"]:hover {
+  background-color: #06675f !important;
+}
+
+body [class~="text-indigo-600"],
+body [class~="text-indigo-700"] {
+  color: #087e76 !important;
+}
+
+body [class~="border-indigo-600"] {
+  border-color: #087e76 !important;
+}
+
+body [class~="bg-indigo-50"] {
+  background-color: rgb(215 240 234 / 86%) !important;
+}
+
+body [class~="text-indigo-400"],
+body [class~="text-indigo-500"] {
+  color: #2a9d92 !important;
+}
+
+body [class~="hover:text-indigo-400"]:hover {
+  color: #087e76 !important;
+}
+
+.auth-panel {
+  position: relative;
+  overflow: hidden;
+  border-top: 4px solid #0e8b88;
+  background-color: rgb(247 252 250 / 82%);
+  box-shadow: 0 26px 80px rgb(12 49 54 / 20%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.auth-screen {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #eaf3ef;
+}
+
+.auth-screen::before {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(236 246 242 / 77%), rgb(236 246 242 / 45%) 52%, rgb(236 246 242 / 15%)),
+    url('./assets/dormitory-campus.svg') center 62% / cover no-repeat;
+  content: '';
+  pointer-events: none;
+}
+
+.auth-panel::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 135px;
+  background: linear-gradient(110deg, #174e50, #398c7c);
+  content: '';
+  pointer-events: none;
+}
+
+.auth-panel > * {
+  position: relative;
+}
+
+.toast-stack {
+  position: fixed;
+  z-index: 9999;
+  top: 76px;
+  right: 20px;
+  display: grid;
+  width: min(360px, calc(100vw - 32px));
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  overflow: hidden;
+  padding: 13px 12px;
+  border: 1px solid #dce7e2;
+  background: rgb(255 255 255 / 96%);
+  box-shadow: 0 10px 28px rgb(20 54 53 / 16%);
+  color: #17343b;
+  animation: toast-enter 180ms ease-out both;
+  pointer-events: auto;
+}
+
+.toast-card::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: currentColor;
+  content: '';
+  transform-origin: left;
+  animation: toast-progress 4500ms linear both;
+}
+
+.toast-success {
+  color: #087e68;
+}
+
+.toast-error {
+  border-color: #f0d4d0;
+  color: #b5473d;
+}
+
+.toast-info {
+  color: #397b79;
+}
+
+.toast-icon {
+  flex: 0 0 auto;
+}
+
+.toast-message {
+  flex: 1;
+  margin: 0;
+  color: #253b43;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.toast-close {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: 0;
+  background: transparent;
+  color: #73848a;
+  cursor: pointer;
+}
+
+.toast-close:hover {
+  background: #edf4f1;
+  color: #17343b;
+}
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-progress {
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@page {
+  size: A4 portrait;
+  margin: 10mm 12mm;
+}
+
+@media print {
+  /* Reset html, body, and root so Chromium pagination works without clipping or blank pages */
+  html,
+  body {
+    height: auto !important;
+    min-height: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    overflow: visible !important;
+  }
+
+  #root {
+    position: static !important;
+    isolation: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+
+  /* Reset outer layout containers (Layout.jsx) */
+  .flex.h-screen,
+  div:has(> main),
+  .overflow-hidden:has(> main),
+  .overflow-hidden {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: block !important;
+    position: static !important;
+  }
+
+  /* Hide app navigation, sidebar, header, action buttons, grip bar, toast stack */
+  aside,
+  header,
+  nav,
+  .bill-document-actions,
+  .toast-stack,
+  .print-hidden,
+  .no-print,
+  [data-print-hidden="true"],
+  .sidebar-drag-handle {
+    display: none !important;
+  }
+
+  main {
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    display: block !important;
+    background: #ffffff !important;
+  }
+
+  main [class~="bg-white"] {
+    border: 0 !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .bill-document-wrap,
+  .contract-document-wrap {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .bill-document,
+  .contract-document {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    page-break-inside: avoid;
+  }
+}
+
+@media (max-width: 767px) {
+  .mobile-bottom-nav {
+    min-height: calc(60px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .mobile-bottom-nav a[aria-current="page"] {
+    background: rgb(215 240 234 / 86%);
+    color: #087e76;
+  }
+
+  .mobile-bottom-nav a[aria-current="page"] svg {
+    color: #087e76;
+  }
+
+  main {
+    border-top-width: 3px;
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  main h1 {
+    font-size: 1.35rem;
+    line-height: 1.35;
+  }
+
+  main h2 {
+    line-height: 1.4;
+  }
+
+  main input,
+  main select,
+  main textarea,
+  main button {
+    max-width: 100%;
+  }
+
+  main table {
+    min-width: 640px;
+  }
+
+  .toast-stack {
+    top: 72px;
+    right: 12px;
+    width: calc(100vw - 24px);
+  }
+
+  body {
+    background-attachment: scroll;
+  }
+
+  .auth-screen::before {
+    background-position: 68% 62%;
+  }
+}
