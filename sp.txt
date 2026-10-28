@@ -1,0 +1,58 @@
+Facup123456@
+
+
+
+sqa_e33ddf36021a78238a823f1a6edc1ff377f69ca2
+
+
+docker run --rm `
+  --memory=4g `
+  -e SONAR_HOST_URL="http://host.docker.internal:9000" `
+  -e SONAR_TOKEN="sqa_e33ddf36021a78238a823f1a6edc1ff377f69ca2" `
+  -v "${PWD}:/usr/src" `
+  sonarsource/sonar-scanner-cli
+
+
+
+python SonarQube-main/sonar_report.py `
+  --host http://localhost:9000 `
+  --project spflim-dormitory `
+  --token "sqa_e33ddf36021a78238a823f1a6edc1ff377f69ca2" `
+  --output spflim_analysis_report.pdf
+
+
+nualjan.k@ku.th
+รหัส pOngpAng04.
+
+รหัสhos
+Nualjan2004.
+
+PS D:\spflimfinal> ssh root@179.197.241.63
+root@179.197.241.63's password: 
+Welcome to Ubuntu 26.04.1 LTS (GNU/Linux 7.0.0-38-generic x86_64)
+
+รหัสซุปแอดมิน
+admin
+123456
+
+
+
+
+
+git add PROJECT_GUIDE.md frontend/src/pages/Login.jsx
+git commit -m "Update login and project guide"
+git push origin main
+
+
+
+Set-Location D:\spflimfinal
+git add frontend/src/utils/printHelper.js
+git commit -m "Fit contract print to A49"
+git push origin main
+
+
+
+
+cd /root/spflim
+git pull --ff-only
+docker compose -f docker-compose.production.yml up -d --build frontend

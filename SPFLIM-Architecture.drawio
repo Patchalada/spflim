@@ -1,0 +1,288 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36" version="29.2.9" pages="3">
+  <diagram id="spflim-architecture" name="System Architecture">
+    <mxGraphModel dx="1303" dy="713" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-arch" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=24;fontStyle=1;fontColor=#123B3A;" value="SPFLIM Dormitory Management — System Architecture" vertex="1">
+          <mxGeometry height="40" width="1000" x="40" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="browser" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6FFFB;strokeColor=#0F766E;fontSize=16;fontStyle=1;spacing=12;" value="Browser&#xa;Admin / Tenant&#xa;React SPA" vertex="1">
+          <mxGeometry height="110" width="170" x="50" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="host-nginx" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#C2410C;fontSize=15;fontStyle=1;spacing=12;" value="VPS Host&#xa;Nginx reverse proxy&#xa;spflim.nualjan.tech :80/:443" vertex="1">
+          <mxGeometry height="110" width="210" x="285" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="compose" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#94A3B8;dashed=1;verticalAlign=top;spacingTop=12;fontSize=15;fontStyle=1;" value="Docker Compose production network" vertex="1">
+          <mxGeometry height="480" width="540" x="560" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;fontSize=15;spacing=12;" value="Frontend container&#xa;Nginx :80 → Host 127.0.0.1:8080&#xa;React/Vite static SPA&#xa;Proxy /api, /api-docs, /socket.io" vertex="1">
+          <mxGeometry height="145" width="250" x="610" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="backend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontSize=15;spacing=12;" value="Backend container&#xa;Express API :5000&#xa;JWT auth · Role authorization&#xa;Socket.IO · DB migrations" vertex="1">
+          <mxGeometry height="145" width="250" x="610" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="neon" parent="1" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F5F3FF;strokeColor=#7C3AED;fontSize=14;spacing=10;" value="Neon PostgreSQL&#xa;External managed database&#xa;Users · Rooms · Contracts&#xa;Bills · Transactions · Notifications" vertex="1">
+          <mxGeometry height="130" width="215" x="915" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="slipok" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#CA8A04;fontSize=14;spacing=10;" value="SlipOK API&#xa;Optional external service&#xa;Slip verification" vertex="1">
+          <mxGeometry height="100" width="215" x="915" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="line" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#E11D48;fontSize=14;spacing=10;" value="LINE Messaging API&#xa;Optional admin notifications" vertex="1">
+          <mxGeometry height="70" width="215" x="915" y="345" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-browser-nginx" edge="1" parent="1" source="browser" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0F766E;endArrow=block;endFill=1;fontSize=12;" target="host-nginx" value="HTTPS / web UI">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-nginx-frontend" edge="1" parent="1" source="host-nginx" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#2563EB;endArrow=block;endFill=1;fontSize=12;" target="frontend" value="proxy :8080">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-frontend-backend" edge="1" parent="1" source="frontend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#16A34A;endArrow=block;endFill=1;fontSize=12;" target="backend" value="/api · /api-docs · Socket.IO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-backend-db" edge="1" parent="1" source="backend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7C3AED;endArrow=block;endFill=1;fontSize=12;" target="neon" value="SQL via pg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-backend-slipok" edge="1" parent="1" source="backend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#CA8A04;endArrow=block;endFill=1;fontSize=12;" target="slipok" value="HTTPS verification request">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-backend-line" edge="1" parent="1" source="backend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#E11D48;endArrow=block;endFill=1;fontSize=12;" target="line" value="Optional notifications">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="note-arch" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#475569;" value="Production topology from docker-compose.production.yml and deploy/nginx/spflim.conf. TLS is shown as HTTPS when configured at the host proxy." vertex="1">
+          <mxGeometry height="40" width="1050" x="50" y="700" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="spflim-flows" name="Key Flows">
+    <mxGraphModel dx="2316" dy="1267" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-flow" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=24;fontStyle=1;fontColor=#123B3A;" value="SPFLIM — Login and Slip Verification Flows" vertex="1">
+          <mxGeometry height="40" width="1000" x="40" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="login-start" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6FFFB;strokeColor=#0F766E;fontSize=14;spacing=10;" value="Open Login&#xa;Enter username + password" vertex="1">
+          <mxGeometry height="75" width="175" x="45" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="login-query" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;fontSize=14;spacing=10;" value="Backend queries m_users&#xa;by parameterized username" vertex="1">
+          <mxGeometry height="75" width="205" x="280" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="login-found" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#CA8A04;fontSize=14;" value="User found?" vertex="1">
+          <mxGeometry height="70" width="120" x="545" y="162.5" as="geometry" />
+        </mxCell>
+        <mxCell id="login-no-user" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#E11D48;fontSize=13;" value="404&#xa;User not found" vertex="1">
+          <mxGeometry height="60" width="140" x="730" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="login-password" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#CA8A04;fontSize=14;" value="bcrypt password&#xa;matches?" vertex="1">
+          <mxGeometry height="75" width="130" x="735" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="login-bad-pass" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#E11D48;fontSize=13;" value="400&#xa;Invalid password" vertex="1">
+          <mxGeometry height="60" width="150" x="920" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="login-status" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#CA8A04;fontSize=13;" value="Account status&#xa;pending / rejected?" vertex="1">
+          <mxGeometry height="85" width="145" x="920" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="login-kyc-block" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#E11D48;fontSize=13;" value="403&#xa;Show KYC status message" vertex="1">
+          <mxGeometry height="65" width="180" x="905" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="login-token" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontSize=14;spacing=10;" value="Issue JWT (1 day)&#xa;Return user_id + role" vertex="1">
+          <mxGeometry height="75" width="190" x="650" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="login-role" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontSize=14;spacing=10;" value="Admin → /dashboard&#xa;Tenant → /my-dashboard" vertex="1">
+          <mxGeometry height="75" width="205" x="385" y="385" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-ls-lq" edge="1" parent="1" source="login-start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;" target="login-query">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-lq-lf" edge="1" parent="1" source="login-query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;" target="login-found">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-found-no" edge="1" parent="1" source="login-found" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;" target="login-no-user" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="605" y="160" />
+              <mxPoint x="805" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-found-yes" edge="1" parent="1" source="login-found" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;" target="login-password" value="Yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-pass-no" edge="1" parent="1" source="login-password" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;" target="login-bad-pass" value="No">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-pass-yes" edge="1" parent="1" source="login-password" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="login-status" value="Yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-status-block" edge="1" parent="1" source="login-status" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=11;" target="login-kyc-block" value="pending / rejected">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1060" y="273" />
+              <mxPoint x="1060" y="273" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-status-ok" edge="1" parent="1" source="login-status" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=11;" target="login-token" value="Other allowed status">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="745" y="282" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-token-role" edge="1" parent="1" source="login-token" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;" target="login-role">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slip-start" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6FFFB;strokeColor=#0F766E;fontSize=14;spacing=10;" value="Tenant uploads slip&#xa;POST /api/tenant/upload-slip" vertex="1">
+          <mxGeometry height="75" width="190" x="45" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="slip-check" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;fontSize=14;spacing=10;" value="Check tenant, bill pending,&#xa;image + amount valid" vertex="1">
+          <mxGeometry height="75" width="210" x="300" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="slip-mode" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#CA8A04;fontSize=14;" value="SLIPOK_MODE" vertex="1">
+          <mxGeometry height="85" width="140" x="570" y="585" as="geometry" />
+        </mxCell>
+        <mxCell id="slip-manual" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#C2410C;fontSize=13;spacing=8;" value="manual / API review code&#xa;Save for admin review" vertex="1">
+          <mxGeometry height="70" width="205" x="770" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="slip-api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#CA8A04;fontSize=13;spacing=8;" value="api mode: call SlipOK&#xa;check response + amount" vertex="1">
+          <mxGeometry height="70" width="205" x="805" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="slip-result" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEFCE8;strokeColor=#CA8A04;fontSize=14;" value="verified?" vertex="1">
+          <mxGeometry height="70" width="120" x="847.5" y="705" as="geometry" />
+        </mxCell>
+        <mxCell id="slip-paid" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontSize=13;spacing=8;" value="Save verified status&#xa;Mark bill paid + transaction" vertex="1">
+          <mxGeometry height="70" width="205" x="600" y="705" as="geometry" />
+        </mxCell>
+        <mxCell id="slip-review" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#E11D48;fontSize=13;spacing=8;" value="Save rejected / duplicate / review&#xa;Notify admin (LINE / Socket.IO)" vertex="1">
+          <mxGeometry height="70" width="230" x="300" y="705" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-ss-sc" edge="1" parent="1" source="slip-start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;" target="slip-check">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-sc-sm" edge="1" parent="1" source="slip-check" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;endArrow=block;endFill=1;" target="slip-mode">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-mode-manual" edge="1" parent="1" source="slip-mode" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;" target="slip-manual" value="manual">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-mode-api" edge="1" parent="1" source="slip-mode" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;" target="slip-api" value="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-api-result" edge="1" parent="1" source="slip-api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" target="slip-result">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-result-paid" edge="1" parent="1" source="slip-result" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;" target="slip-paid" value="Yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-result-review" edge="1" parent="1" source="slip-result" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;fontSize=12;" target="slip-review" value="No">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="905" y="790" />
+              <mxPoint x="415" y="790" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-manual-review" edge="1" parent="1" source="slip-manual" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=1;" target="slip-review">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="270" y="505" />
+              <mxPoint x="270" y="740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="spflim-erd" name="Database ERD">
+    <mxGraphModel dx="1737" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-erd" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=24;fontStyle=1;fontColor=#123B3A;" value="SPFLIM — Database Relationships (PostgreSQL)" vertex="1">
+          <mxGeometry height="40" width="1000" x="40" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="users" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6FFFB;strokeColor=#0F766E;fontSize=13;align=left;spacingLeft=12;spacing=8;" value="m_users&#xa;PK user_id&#xa;UQ username&#xa;role, status&#xa;profile / KYC fields" vertex="1">
+          <mxGeometry height="135" width="210" x="50" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="rooms" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6FFFB;strokeColor=#0F766E;fontSize=13;align=left;spacingLeft=12;spacing=8;" value="m_rooms&#xa;PK room_id&#xa;UQ room_number&#xa;floor, room_type&#xa;base_price, status" vertex="1">
+          <mxGeometry height="135" width="210" x="50" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="contracts" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;fontSize=13;align=left;spacingLeft=12;spacing=8;" value="m_contracts&#xa;PK contract_id&#xa;FK room_id → m_rooms&#xa;FK tenant_id → m_users&#xa;dates, deposit, status&#xa;signatures / documents" vertex="1">
+          <mxGeometry height="170" width="245" x="380" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="bills" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;fontSize=13;align=left;spacingLeft=12;spacing=8;" value="t_bills&#xa;PK bill_id&#xa;FK contract_id → m_contracts&#xa;period, rent, utilities&#xa;total_amount, payment_status&#xa;slip verification fields" vertex="1">
+          <mxGeometry height="165" width="255" x="735" y="245" as="geometry" />
+        </mxCell>
+        <mxCell id="transactions" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontSize=13;align=left;spacingLeft=12;spacing=8;" value="t_transactions&#xa;PK transaction_id&#xa;FK bill_id → t_bills (optional)&#xa;type, amount, category&#xa;payment reference / notes" vertex="1">
+          <mxGeometry height="145" width="245" x="1100" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="renewals" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#C2410C;fontSize=12;align=left;spacingLeft=12;spacing=8;" value="m_contract_renewal_requests&#xa;PK request_id&#xa;FK contract_id → m_contracts&#xa;FK tenant_id → m_users&#xa;FK reviewed_by → m_users&#xa;status, dates, documents" vertex="1">
+          <mxGeometry height="165" width="270" x="380" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="tickets" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#C2410C;fontSize=12;align=left;spacingLeft=12;spacing=8;" value="t_maintenance_tickets&#xa;PK ticket_id&#xa;FK tenant_id → m_users&#xa;FK contract_id → m_contracts (optional)&#xa;priority, status, response" vertex="1">
+          <mxGeometry height="150" width="275" x="50" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="notifications" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#E11D48;fontSize=12;align=left;spacingLeft=12;spacing=8;" value="t_notifications&#xa;PK notification_id&#xa;FK user_id → m_users (optional)&#xa;target_role, title, message&#xa;type, link, is_read" vertex="1">
+          <mxGeometry height="140" width="250" x="50" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="kyc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#E11D48;fontSize=11;align=left;spacingLeft=12;spacing=6;" value="m_kyc_reviews&#xa;PK review_id&#xa;FK user_id → m_users&#xa;FK reviewed_by → m_users&#xa;FK requested_room_id → m_rooms (optional)&#xa;FK assigned_room_id → m_rooms (optional)&#xa;FK contract_id → m_contracts (optional)" vertex="1">
+          <mxGeometry height="185" width="300" x="380" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="billing-settings" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#7C3AED;fontSize=12;align=left;spacingLeft=12;spacing=8;" value="m_billing_settings&#xa;PK setting_id (singleton)&#xa;dormitory details&#xa;water_rate, electric_rate&#xa;payment instructions" vertex="1">
+          <mxGeometry height="130" width="245" x="735" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="room-types" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#7C3AED;fontSize=12;align=left;spacingLeft=12;spacing=8;" value="m_room_types&#xa;PK type_id&#xa;UQ room_type&#xa;base_price" vertex="1">
+          <mxGeometry height="110" width="220" x="735" y="690" as="geometry" />
+        </mxCell>
+        <mxCell id="migrations" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;fontSize=12;align=left;spacingLeft=12;spacing=8;" value="app_schema_migrations&#xa;PK version&#xa;name, applied_at&#xa;Schema migration tracking" vertex="1">
+          <mxGeometry height="115" width="245" x="1100" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-contract" edge="1" parent="1" source="users" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;endArrow=block;endFill=1;fontSize=11;" target="contracts" value="tenant_id (1:N)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-room-contract" edge="1" parent="1" source="rooms" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;endArrow=block;endFill=1;fontSize=11;" target="contracts" value="room_id (1:N)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-contract-bill" edge="1" parent="1" source="contracts" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;endArrow=block;endFill=1;fontSize=11;" target="bills" value="contract_id (1:N)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-bill-transaction" edge="1" parent="1" source="bills" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;endArrow=block;endFill=1;fontSize=11;" target="transactions" value="bill_id (0:1)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-contract-renewal" edge="1" parent="1" source="contracts" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#C2410C;endArrow=block;endFill=1;fontSize=11;" target="renewals" value="contract_id (1:N)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-renewal" edge="1" parent="1" source="users" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#C2410C;endArrow=block;endFill=1;fontSize=10;" target="renewals" value="tenant_id / reviewed_by">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-ticket" edge="1" parent="1" source="users" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#C2410C;endArrow=block;endFill=1;fontSize=10;" target="tickets" value="tenant_id (1:N)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-contract-ticket" edge="1" parent="1" source="contracts" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#C2410C;endArrow=block;endFill=1;fontSize=10;" target="tickets" value="contract_id (optional)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-notification" edge="1" parent="1" source="users" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E11D48;endArrow=block;endFill=1;fontSize=10;" target="notifications" value="user_id (optional)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-kyc" edge="1" parent="1" source="users" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E11D48;endArrow=block;endFill=1;fontSize=10;" target="kyc" value="user_id / reviewed_by">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-room-kyc" edge="1" parent="1" source="rooms" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E11D48;endArrow=block;endFill=1;fontSize=10;" target="kyc" value="requested / assigned room">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-contract-kyc" edge="1" parent="1" source="contracts" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E11D48;endArrow=block;endFill=1;fontSize=10;" target="kyc" value="contract_id (optional)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="erd-note" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#475569;" value="Relationship lines represent declared foreign keys in backend/src/config/migrateDatabase.js. m_room_types and m_billing_settings are lookup/config tables without declared foreign keys to the other entities. Password and document/signature values are sensitive and intentionally not shown." vertex="1">
+          <mxGeometry height="80" width="650" x="735" y="865" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
